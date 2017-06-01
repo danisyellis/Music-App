@@ -1,8 +1,0 @@
-<%- include('layout/header', {'pageTitle' : 'Artists'}); %>
-  <h1 class="white-text">Artists</h1>
-  <div class="divider"></div>
-  <div class="row"></div>
-  <% artists.forEach(function(artist){%>
-    <% include artists/list_item.ejs %>
-    <%})%>
-      <% include layout/footer %>

@@ -1,4 +1,4 @@
-var express = require('express'), router = express.Router();
+var express = require('express'), router = express.Router(), errors = require('../../lib/errors');
 
 module.exports = function (artist) {
   var a = new artist();
@@ -8,7 +8,7 @@ module.exports = function (artist) {
       console.log("getArtists", data)
       res.json(data)
     }).catch(function(err){
-      res.send(err);
+      res.send(errors.toJson(err));
       console.log("getArtists error", err);
     })
 
