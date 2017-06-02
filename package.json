@@ -16,7 +16,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "postinstall": "db/postinstall.sh",
+    "postinstall": "sh db/postinstall.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "db:create": "createdb music_api --host=DATABASE_URL",
