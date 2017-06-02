@@ -47,12 +47,59 @@ class Artist  {
     return new Promise(function(resolve, reject) {
       console.log(params)
       pool.connect().then(client => {
-        client.query('INSERT INTO artists (name, genre, image) VALUES ($1::text,$2::text,$3::text)', [params.name, params.genre, "1234"]).then(res => {
-          resolve(res.rows[0]);
+        client.query('INSERT INTO artists (name, genre, image) VALUES ($1::text,$2::text,$3::text)', [params.name, params.genre, ('' || params.image)]).then(res => {
+          client.query('SELECT * FROM artists ORDER BY id DESC').then(res => {
+            resolve(res.rows[0])
+          }).catch(e => {
+            reject(formatErrors.toJson("Cannot add artist " + JSON.stringify(e)));
+            client.release();
+          });
           client.release();
         })
         .catch(e => {
           reject(formatErrors.toJson("Cannot add artist " + JSON.stringify(e)));
+          client.release();
+        })
+      });
+    })
+  }
+
+  // edit artist
+  editArtist(params) {
+    return new Promise(function(resolve, reject) {
+      console.log(params)
+      pool.connect().then(client => {
+        client.query('UPDATE artists SET (name, genre, image) = ($1::text,$2::text,$3::text) WHERE id = $4::int', [params.name, params.genre, ('' || params.image), params.id]).then(res => {
+          client.query('SELECT * FROM artists WHERE id = $1', [params.id]).then(res => {
+            resolve(res.rows[0])
+          }).catch(e => {
+            reject(formatErrors.toJson("Cannot edit artist " + JSON.stringify(e)));
+            client.release();
+          });
+          client.release();
+        })
+        .catch(e => {
+          reject(formatErrors.toJson("Cannot edit artist " + JSON.stringify(e)));
+          client.release();
+        })
+      });
+    })
+  }
+
+  // delete artist
+  deleteArtist(params) {
+    return new Promise(function(resolve, reject) {
+      pool.connect().then(client => {
+        client.query('DELETE FROM artists WHERE id = $1::int', [params.id]).then(res => {
+          if (res.rowCount) {
+            resolve({'result' : 'success'});
+          } else {
+            reject(formatErrors.toJson("Cannot find artist id " + params.id));
+          }
+          client.release();
+        })
+        .catch(e => {
+          reject(formatErrors.toJson("Cannot delete artist " + JSON.stringify(e)));
           client.release();
         })
       });

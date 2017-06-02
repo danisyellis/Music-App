@@ -6,9 +6,20 @@ var app = express();
 
 module.exports = function (artist) {
 
-  router.use(expressValidator());
+  router.use(expressValidator({
+    customValidators: {
+      isPresent: function(value) {
+        console.log('isPresent', (typeof value != 'undefined'))
+        return (typeof value == 'undefined');
+      }
+    }
+  }));
 
   const artistSchema = {
+    'id': {
+      isPresent: false,
+      errorMessage: 'Please do not provide id for artist'
+    },
     'name': {
       notEmpty: true,
       optional: false,
@@ -37,21 +48,37 @@ module.exports = function (artist) {
     }
   };
 
+  var idSchema = {
+    notEmpty: true,
+    optional: false,
+    isInt: {
+      errorMessage: 'Please provide valid artist id' // Error message for the validator, takes precedent over parameter message
+    },
+    errorMessage: 'Please provide artist id'
+  }
+
+  var editArtistSchema = JSON.parse(JSON.stringify(artistSchema));
+  editArtistSchema.id = idSchema;
+
+  var deleteArtistSchema = {
+    id : idSchema
+  }
+
   var a = new artist();
 
-  router.post('/', function(req, res) {
-    req.check(artistSchema);
+  // delete artist
+  router.delete('/', function(req, res) {
+    req.check(deleteArtistSchema);
     req.getValidationResult().then(function(result) {
-      if (result.useFirstErrorOnly().isEmpty())
-      {
-          a.addArtist(req.params).then(function(data) {
-          console.log("addArtists", data)
+      if (result.useFirstErrorOnly().isEmpty()) {
+        a.deleteArtist(req.query).then(function(data) {
+          console.log("deleteArtist", data)
           res.json(data)
         }).catch(function(err){
-            res.json(err);
+          res.json(err);
         })
       } else {
-        console.log("addArtists params error", err);
+        console.log("deleteArtist params error");
         res.json(formatErrors.toJson(result.array()));
       }
     }).catch(function(err) {
@@ -59,6 +86,48 @@ module.exports = function (artist) {
     });
   });
 
+  // edit artist
+  router.put('/', function(req, res) {
+    req.check(editArtistSchema);
+    req.getValidationResult().then(function(result) {
+      if (result.useFirstErrorOnly().isEmpty()) {
+        a.editArtist(req.query).then(function(data) {
+          console.log("editArtist", data)
+          res.json(data)
+        }).catch(function(err){
+          res.json(err);
+        })
+      } else {
+        console.log("editArtist params error");
+        res.json(formatErrors.toJson(result.array()));
+      }
+    }).catch(function(err) {
+      console.log("Err", err)
+    });
+  });
+
+  // add artist
+  router.post('/', function(req, res) {
+    console.log(artistSchema)
+    req.check(artistSchema);
+    req.getValidationResult().then(function(result) {
+      if (result.useFirstErrorOnly().isEmpty()) {
+          a.addArtist(req.query).then(function(data) {
+          console.log("addArtists", data)
+          res.json(data)
+        }).catch(function(err){
+            res.json(err);
+        })
+      } else {
+        console.log("addArtists params error");
+        res.json(formatErrors.toJson(result.array()));
+      }
+    }).catch(function(err) {
+      console.log("Err", err)
+    });
+  });
+
+  // get all artists
   router.get('/all', function(req, res) {
     a.getArtists().then(function(data) {
       console.log("getArtists", data)
@@ -69,7 +138,8 @@ module.exports = function (artist) {
     })
   });
 
-  router.get(['/:id', '/id/:id'], function(req, res) {
+  // get artist by id
+  router.get(['/:id'], function(req, res) {
     a.getArtistById(req.params.id).then(function(data) {
       console.log("getArtistById", data);
       if (!data) {
@@ -82,6 +152,7 @@ module.exports = function (artist) {
     });
   });
 
+  // get artist by name
   router.get('/name/:name', function(req, res) {
     a.getArtistByName(req.params.name || null).then(function(data) {
       console.log("getArtistByName", data);
