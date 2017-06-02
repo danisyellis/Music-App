@@ -12,14 +12,48 @@ Init #3: Hello, Web Servers
 
 Get all artists
 
-http://localhost:8080/api/artists
+<http://localhost:8080/api/artists>
 
-Get an artist by id. ID = id.
+Get an artist by id. 
 
-http://localhost:8080/api/artist/ID 
-or
-http://localhost:8080/api/artist/id/ID
+<http://localhost:8080/api/artist/1> 
 
 Get an artist by name. NAME = name.
 
-http://localhost:8080/api/artist/name/NAME
+<http://localhost:8080/api/artist/name/Santogold>
+
+Add new artist
+
+<http://localhost:8080/api/artist> POST
+<pre><code>
+{
+  name: "Artist Name",
+  genre: "Genre",
+  image: "http://www.theimageurl.com"
+}
+</code></pre>
+
+Edit artist
+
+<http://localhost:8080/api/artist> PUT
+<pre><code>
+{
+  id: 1,
+  name: "Artist Name",
+  genre: "Genre",
+  image: "http://www.theimageurl.com"
+}
+</code></pre>
+
+Delete artist
+
+<http://localhost:8080/api/artist> DELETE
+<pre><code>
+{
+  id: 1
+}
+</code></pre>
+
+
+  
+
