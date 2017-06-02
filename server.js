@@ -3,16 +3,12 @@ var app = express();
 var logger = require('morgan');
 
 // load models and load data
-var artist = require('./model/artist');
+var Artists = require('./model/artist');
 
-var Album = require('./model/album');
-var album = new Album();
-album.loadAll();
+var Albums = require('./model/album');
 
-
-var Song = require('./model/song');
-var song = new Song();
-song.loadAll();
+var Songs = require('./model/song');
+var song = new Songs();
 
 //logging middleware
 app.use(logger('dev'));
@@ -26,14 +22,24 @@ var about = require('./routes/about');
 app.use('/about', about);
 
 
-var artists_api = require('./routes/api/artists')(artist);
+var artists_api = require('./routes/api/artists')(Artists);
 app.use('/api/artists', artists_api);
 
-var artistById_api = require('./routes/api/artistById')(artist);
+var artistById_api = require('./routes/api/artistById')(Artists);
 app.use('/api/artist', artistById_api);
 
-var artistByName_api = require('./routes/api/artistByName')(artist);
+var artistByName_api = require('./routes/api/artistByName')(Artists);
 app.use('/api/artist', artistByName_api);
+var func = function() {return "hi"}
+
+var albums_api = require('./routes/api/albums')(Albums);
+app.use('/api/albums', albums_api);
+
+var albumsById_api = require('./routes/api/albumById')(Albums);
+app.use('/api/album', albumsById_api);
+
+var albumByTitle_api = require('./routes/api/albumByTitle.js');
+app.use('/api/album', albumByTitle_api);
 
 //error-handling middleware
 app.use(function(req, res) {

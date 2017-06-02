@@ -1,9 +1,9 @@
 var express = require('express'), router = express.Router(), errors = require('../../lib/errors');
 
-module.exports = function (artist) {
-  var a = new artist();
+module.exports = function (Artist) {
+  var a = new Artist();
 
-  router.get(['/:id', '/id/:id'], function(req, res) {
+  router.get(['/:id'], function(req, res) {
     a.getArtistById(req.params.id).then(function(data) {
       console.log("getArtistById", data);
       if (!data) {

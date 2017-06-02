@@ -1,7 +1,7 @@
 var express = require('express'), router = express.Router(), errors = require('../../lib/errors');
 
-module.exports = function (artist) {
-  var a = new artist();
+module.exports = function (Artist) {
+  var a = new Artist();
 
   router.get('/name/:name', function(req, res) {
     a.getArtistByName(req.params.name || null).then(function(data) {
