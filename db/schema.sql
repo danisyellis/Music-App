@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS "artists";
+DROP TABLE IF EXISTS "albums";
+DROP TABLE IF EXISTS "songs";
+DROP TABLE IF EXISTS "playlists";
+DROP TABLE IF EXISTS "playlist_songs";
+
 CREATE TABLE "artists" (
 "id"  SERIAL PRIMARY KEY,
 "name" TEXT ,
