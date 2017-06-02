@@ -2,9 +2,11 @@
 
 var fs = require('fs');
 const pool = require('../db/db');
+const formatErrors = require('../lib/errors');
 
 class Album {
-  getAlbums(albumId) {
+  getAlbums() {
+    var formatErrors = this;
     return new Promise(function(resolve, reject) {
       pool.connect().then(client => {
         client.query('SELECT * FROM albums').then(res => {
@@ -12,7 +14,7 @@ class Album {
         client.release();
       })
       .catch(e => {
-        reject("Error loading albums");
+        reject(formatErrors.toJson("getAlbums - Error loading album"));
         client.release();
       })
     });
@@ -20,10 +22,9 @@ class Album {
   }
 
    getAlbumById(id) {
-     var _this = this;
      return new Promise(function(resolve, reject) {
        if (typeof id == 'undefined') {
-         reject(_this.returnError("Please supply an id"));
+         reject(formatErrors.toJson("Please supply an id"));
        }
        pool.connect().then(client => {
          client.query('SELECT * FROM artists WHERE id= $1::int', [id]).then(res => {
@@ -31,7 +32,7 @@ class Album {
            client.release();
          })
          .catch(err => {
-           reject(_this.returnError("Cannot find album by id " + id));
+           reject(formatErrors.toJson("Cannot find album by id " + id));
            client.release();
          })
        });
@@ -39,18 +40,17 @@ class Album {
    }
 
    getAlbumByTitle(title) {
-     var _this = this;
      return new Promise(function(resolve, reject) {
        if (!title) {
-         reject(_this.returnError("Please supply a name"));
+         reject(formatErrors.toJson("Please supply a name"));
        }
        pool.connect.then(client => {
-         client.query("SELECT * FROM albums WHERE LOWER(name) LIKE LOWER($1::text)", ['%'+name+'%']).then(res => {
+         client.query("SELECT * FROM albums WHERE LOWER(title) LIKE LOWER($1::text)", ['%'+title+'%']).then(res => {
            resolve(res.rows[0]);
            client.release();
          })
          .catch(e => {
-           reject(_this.returnError("Cannot find album by name " + name));
+           reject(formatErrors.toJson("Cannot find album by name " + name));
            client.release();
          })
        });
