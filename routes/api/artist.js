@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var formatErrors = require('../../lib/errors');
 var expressValidator = require('express-validator');
-var app = express();
 
 module.exports = function (artist) {
 

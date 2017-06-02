@@ -6,6 +6,7 @@ var errors = require('./lib/errors');
 
 // load models and load data
 var Artist = require('./model/artist');
+var Playlist = require('./model/playlist');
 var Album = require('./model/album');
 var Song = require('./model/song');
 
@@ -31,8 +32,15 @@ app.use('/api/albums', albums_api);
 var albumsById_api = require('./routes/api/albumById')(Albums);
 app.use('/api/album', albumsById_api);
 
-var albumByTitle_api = require('./routes/api/albumByTitle.js');
+var albumByTitle_api = require('./routes/api/albumByTitle.js')(Albums);
 app.use('/api/album', albumByTitle_api);
+
+var playlist = require('./routes/api/playlist')(Playlist);
+app.use('/api/playlist', playlist);
+
+app.use(function(req, res) {
+  res.status(404).send(errors.toJson("404 Not Found"));
+})
 
 //error-handling middleware
 app.use(function(req, res) {
