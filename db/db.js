@@ -5,14 +5,14 @@ const pg = require('pg');
 // note: all config is optional and the environment variables
 // will be read if the config is not present
 var config = {
-  database: 'music_api', //env var: PGDATABASE
-  password: '', //env var: PGPASSWORD
-  host: 'localhost', // Server hosting the postgres database
+  database: 'd96lrtbt1mqmjh', //env var: PGDATABASE
+  password: 'e3f9819aed48d0a6ede65e245bb70cac36539763e6312fd917d6c38db87737ec', //env var: PGPASSWORD
+  host: 'ec2-23-23-234-118.compute-1.amazonaws.com', // Server hosting the postgres database
   port: 5432, //env var: PGPORT
   max: 10, // max number of clients in the pool
   idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
-
+√
 //this initializes a connection pool
 //it will keep idle connections open for 30 seconds
 //and set a limit of maximum 10 idle clients
