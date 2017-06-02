@@ -1,10 +1,8 @@
 var util = require('util');
-var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
-var expressValidator = require('express-validator');
-var router = express.Router();
 var logger = require('morgan');
+var errors = require('./lib/errors');
 
 // load models and load data
 var artistModel = require('./model/artist');
@@ -27,14 +25,14 @@ app.use('/about', about);
 var artist = require('./routes/api/artist')(artistModel);
 app.use('/api/artist', artist);
 
+app.use(function(req, res) {
+  res.status(404).send(errors.toJson("404 Not Found"));
+})
+
 //error-handling middleware
 app.use(function(req, res) {
   // undefined - console.error(err.stack);
-  res.status(500 || err.status).send("Oops, something went wrong :-(")
-})
-
-app.use(function(req, res) {
-  res.status(404).send("404 Not Found");
+  res.status(500 || err.status).send(errors.toJson("Oops, something went wrong :-("))
 })
 
 app.listen('8080');

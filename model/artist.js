@@ -8,7 +8,7 @@ class Artist  {
 
   // get all artists
   getArtists() {
-    var _this = this;
+    var formatErrors = this;
     return new Promise(function(resolve, reject) {
       pool.connect().then(client => {
         client.query('SELECT * FROM artists').then(res => {
@@ -25,10 +25,9 @@ class Artist  {
 
   // get artist by id
   getArtistById(id) {
-    var _this = this;
     return new Promise(function(resolve, reject) {
       if (typeof id == 'undefined') {
-        reject(_this.toJson("Please supply an id"));
+        reject(formatErrors.toJson("Please supply an id"));
       }
       pool.connect().then(client => {
         client.query('SELECT * FROM artists WHERE id = $1::int', [id]).then(res => {
@@ -45,18 +44,15 @@ class Artist  {
 
   // add artists
   addArtist(params) {
-    var _this = this;
     return new Promise(function(resolve, reject) {
-      if (typeof id == 'undefined') {
-        reject(_this.toJson("Please supply an id"));
-      }
+      console.log(params)
       pool.connect().then(client => {
-        client.query('SELECT * FROM artists WHERE id = $1::int', [id]).then(res => {
+        client.query('INSERT INTO artists (name, genre, image) VALUES ($1::text,$2::text,$3::text)', [params.name, params.genre, "1234"]).then(res => {
           resolve(res.rows[0]);
           client.release();
         })
         .catch(e => {
-          reject(formatErrors.toJson("Cannot find artist by id " + id));
+          reject(formatErrors.toJson("Cannot add artist " + JSON.stringify(e)));
           client.release();
         })
       });
@@ -65,7 +61,6 @@ class Artist  {
 
   // get artist by name
   getArtistByName(name) {
-    var _this = this;
     return new Promise(function(resolve, reject) {
       if (!name) {
         reject(formatErrors.toJson("Please supply a name"));
