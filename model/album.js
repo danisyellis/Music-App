@@ -44,7 +44,7 @@ class Album {
        if (!title) {
          reject(formatErrors.toJson("Please supply a name"));
        }
-       pool.connect.then(client => {
+       pool.connect().then(client => {
          client.query("SELECT * FROM albums WHERE LOWER(title) LIKE LOWER($1::text)", ['%'+title+'%']).then(res => {
            resolve(res.rows[0]);
            client.release();

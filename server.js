@@ -26,14 +26,8 @@ app.use('/about', about);
 var artist_api = require('./routes/api/artist')(Artist);
 app.use('/api/artist', artist_api);
 
-var albums_api = require('./routes/api/albums')(Album);
-app.use('/api/albums', albums_api);
-
-var albumsById_api = require('./routes/api/albumById')(Album);
-app.use('/api/album', albumsById_api);
-
-var albumByTitle_api = require('./routes/api/albumByTitle.js')(Album);
-app.use('/api/album', albumByTitle_api);
+var album_api = require('./routes/api/album')(Album);
+app.use('/api/album', album_api);
 
 var playlist = require('./routes/api/playlist')(Playlist);
 app.use('/api/playlist', playlist);
