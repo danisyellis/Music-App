@@ -1,39 +1,31 @@
+var util = require('util');
+var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
+var expressValidator = require('express-validator');
+var router = express.Router();
 var logger = require('morgan');
 
 // load models and load data
-var artist = require('./model/artist');
-
+var artistModel = require('./model/artist');
 var Album = require('./model/album');
-var album = new Album();
-album.loadAll();
-
-
 var Song = require('./model/song');
-var song = new Song();
-song.loadAll();
 
 //logging middleware
 app.use(logger('dev'));
+
 // set view engine
 app.set('view engine', 'ejs');
+
 // setup static files
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 // define routes
 var about = require('./routes/about');
 app.use('/about', about);
 
-
-var artists_api = require('./routes/api/artists')(artist);
-app.use('/api/artists', artists_api);
-
-var artistById_api = require('./routes/api/artistById')(artist);
-app.use('/api/artist', artistById_api);
-
-var artistByName_api = require('./routes/api/artistByName')(artist);
-app.use('/api/artist', artistByName_api);
+var artist = require('./routes/api/artist')(artistModel);
+app.use('/api/artist', artist);
 
 //error-handling middleware
 app.use(function(req, res) {

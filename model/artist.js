@@ -1,13 +1,10 @@
 "use strict"
 
-var fs = require('fs');
-
+const fs = require('fs');
 const pool = require('../db/db');
+const formatErrors = require('../lib/errors');
 
 class Artist  {
-  /* constructor is optional
-  constructor() {}
-  */
 
   // get all artists
   getArtists() {
@@ -19,7 +16,7 @@ class Artist  {
         client.release();
       })
       .catch(e => {
-        reject(_this.returnError("getArtists - Error loading artists"));
+        reject(formatErrors.toJson("getArtists - Error loading artists"));
         client.release();
       })
     });
@@ -31,7 +28,7 @@ class Artist  {
     var _this = this;
     return new Promise(function(resolve, reject) {
       if (typeof id == 'undefined') {
-        reject(_this.returnError("Please supply an id"));
+        reject(_this.toJson("Please supply an id"));
       }
       pool.connect().then(client => {
         client.query('SELECT * FROM artists WHERE id = $1::int', [id]).then(res => {
@@ -39,7 +36,27 @@ class Artist  {
           client.release();
         })
         .catch(e => {
-          reject(_this.returnError("Cannot find artist by id " + id));
+          reject(formatErrors.toJson("Cannot find artist by id " + id));
+          client.release();
+        })
+      });
+    })
+  }
+
+  // add artists
+  addArtist(params) {
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      if (typeof id == 'undefined') {
+        reject(_this.toJson("Please supply an id"));
+      }
+      pool.connect().then(client => {
+        client.query('SELECT * FROM artists WHERE id = $1::int', [id]).then(res => {
+          resolve(res.rows[0]);
+          client.release();
+        })
+        .catch(e => {
+          reject(formatErrors.toJson("Cannot find artist by id " + id));
           client.release();
         })
       });
@@ -51,7 +68,7 @@ class Artist  {
     var _this = this;
     return new Promise(function(resolve, reject) {
       if (!name) {
-        reject(_this.returnError("Please supply a name"));
+        reject(formatErrors.toJson("Please supply a name"));
       }
 
       pool.connect().then(client => {
@@ -60,7 +77,7 @@ class Artist  {
           client.release();
         })
         .catch(e => {
-          reject(_this.returnError("Cannot find artist by name " + name));
+          reject(formatErrors.toJson("Cannot find artist by name " + name));
           client.release();
         })
       });
