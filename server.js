@@ -29,6 +29,9 @@ app.use('/api/artist', artist_api);
 var album_api = require('./routes/api/album')(Album);
 app.use('/api/album', album_api);
 
+var song_api = require('./routes/api/song.js')(Song);
+app.use('/api/song', song_api);
+
 var playlist = require('./routes/api/playlist')(Playlist);
 app.use('/api/playlist', playlist);
 
