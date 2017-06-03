@@ -114,8 +114,9 @@ class Song  {
       }
 
       pool.connect().then(client => {
-        client.query("SELECT * FROM songs WHERE LOWER(name) LIKE LOWER($1::text)", ['%'+name+'%']).then(res => {
-          resolve(res.rows[0]);
+        client.query('SELECT songs.* FROM songs JOIN albums ON songs.album_id = albums.id JOIN artists on albums.artist_id = artists.id WHERE LOWER(name) LIKE LOWER($1::text)', ['%'+artistName+'%']).then(res => {
+        //client.query('SELECT * FROM songs WHERE id = $1::int', [artistName]).then(res => {
+          resolve(res.rows);
           client.release();
         })
         .catch(e => {
@@ -133,8 +134,8 @@ class Song  {
       }
       pool.connect().then(client => {
         //LOWER(name) name is the thing in the db    $1 says- the first thing in the array of variables, text is the type of variable, if it's an int instead of text, just put the number inside of the array, without all the concatenating stuff
-        client.query("SELECT * FROM songs JOIN albums ON songs.album_id = albums.id JOIN artists on albums.artist_id = artists.id WHERE LOWER(name) LIKE LOWER($1::text)", ['%'+name+'%']).then(res => {
-          resolve(res.rows[0]);
+        client.query('SELECT songs.* FROM songs JOIN albums ON songs.album_id = albums.id WHERE LOWER(albums.title) LIKE LOWER($1::text)', ['%'+albumName+'%']).then(res => {
+          resolve(res.rows);
           client.release();
         })
         .catch(e => {
