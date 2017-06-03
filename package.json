@@ -16,13 +16,13 @@
   },
   "devDependencies": {},
   "scripts": {
-    "postinstall": "sh db/postinstall.sh",
+    "postinstall": "",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "db:create": "createdb music_api --host=DATABASE_URL",
-    "db:drop": "dropdb music_api --host=DATABASE_URL",
-    "db:setup": "psql -h DATABASE_URL music_api < ./db/schema.sql",
-    "db:seed": "psql -h DATABASE_URL music_api < ./db/data.sql"
+    "db:create": "createdb music_api",
+    "db:drop": "dropdb music_api",
+    "db:setup": "psql music_api < ./db/schema.sql",
+    "db:seed": "psql music_api < ./db/data.sql"
   },
   "repository": {
     "type": "git",

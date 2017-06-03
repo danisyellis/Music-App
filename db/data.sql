@@ -34,7 +34,7 @@ VALUES
     'Radiohead', 'Electronic Rock', 'http://ksassets.timeincuk.net/wp/uploads/sites/55/2015/09/2014Radiohead_Getty76188172250214-1.jpg'
   );
 
-/* INSERT QUERY NO: 6 */
+/* INSERT QUERY NO: 6 */pwd
 INSERT INTO artists(name, genre, image)
 VALUES
   (
