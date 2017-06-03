@@ -40,5 +40,6 @@ app.use(function(req, res) {
   res.status(500 || err.status).send(errors.toJson("Oops, something went wrong :-("))
 })
 
-app.listen('8080');
-console.log('8080 is listen port');
+const port = process.env.PORT || 8080;
+app.listen(port)
+console.log(port + ' is listen port');
