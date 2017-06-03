@@ -5,8 +5,9 @@ Init #3: Hello, Web Servers
 
 1. Make a new directory
 2. Change into the directory "Music-App"
-3. Run command npm-install --save
-4. Run command node server
+3. Run command npm install
+4. Run these commands in order: "npm run db:create", "npm run db:setup", "npm run db:seed"
+5. Run command npm start
 
 #Accessing the API
 
