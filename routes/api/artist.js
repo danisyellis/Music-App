@@ -17,7 +17,7 @@ module.exports = function (artist) {
   const artistSchema = {
     'id': {
       isPresent: false,
-      errorMessage: 'Please do not provide id for artist'
+      errorMessage: 'Please provide id for artist'
     },
     'name': {
       notEmpty: true,

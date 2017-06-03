@@ -5,9 +5,8 @@ var logger = require('morgan');
 var errors = require('./lib/errors');
 
 // load models and load data
-var artistModel = require('./model/artist');
-var playlistModel = require('./model/playlist');
-
+var Artist = require('./model/artist');
+var Playlist = require('./model/playlist');
 var Album = require('./model/album');
 var Song = require('./model/song');
 
@@ -24,10 +23,16 @@ app.use(express.static('public'));
 var about = require('./routes/about');
 app.use('/about', about);
 
-var artist = require('./routes/api/artist')(artistModel);
-app.use('/api/artist', artist);
+var artist_api = require('./routes/api/artist')(Artist);
+app.use('/api/artist', artist_api);
 
-var playlist = require('./routes/api/playlist')(playlistModel);
+var album_api = require('./routes/api/album')(Album);
+app.use('/api/album', album_api);
+
+var song_api = require('./routes/api/song.js')(Song);
+app.use('/api/song', song_api);
+
+var playlist = require('./routes/api/playlist')(Playlist);
 app.use('/api/playlist', playlist);
 
 app.use(function(req, res) {

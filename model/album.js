@@ -1,64 +1,73 @@
 "use strict"
 
 var fs = require('fs');
+const pool = require('../db/db');
+const formatErrors = require('../lib/errors');
 
 class Album {
-
-  constructor() {
-    this.constructor.albums = [];
-    this.constructor.loaded = false;
-  }
-
-  get isLoaded() {
-    return this.constructor.loaded;
-  }
-
-  getAlbums(artistId) {
-    var albumList = [];
-    this.constructor.albums.map(function(album) {
-      if (album.artist_id == artistId || typeof artistId == 'undefined')
-      {
-        albumList.push(album)
-      }
+  getAlbums() {
+    var formatErrors = this;
+    return new Promise(function(resolve, reject) {
+      pool.connect().then(client => {
+        client.query('SELECT * FROM albums').then(res => {
+        resolve(res.rows);
+        client.release();
+      })
+      .catch(e => {
+        reject(formatErrors.toJson("getAlbums - Error loading album"));
+        client.release();
+      })
+    });
     })
-    return albumList;
   }
 
-  getAlbum(id) {
-    if (!id) {return false;}
-    return this.constructor.albums[(id-1)];
-  }
+   getAlbumById(id) {
+     return new Promise(function(resolve, reject) {
+       if (typeof id == 'undefined') {
+         reject(formatErrors.toJson("Please supply an id"));
+       }
+       pool.connect().then(client => {
+         client.query('SELECT * FROM artists WHERE id= $1::int', [id]).then(res => {
+           resolve(res.rows[0]);
+           client.release();
+         })
+         .catch(err => {
+           reject(formatErrors.toJson("Cannot find album by id " + id));
+           client.release();
+         })
+       });
+     })
+   }
 
-  getAlbumCount(artistId)
-  {
-    var count = 0;
-    this.constructor.albums.map(function(album) {
-      if (album.artist_id == artistId)
-      {
-        count++;
-      }
-    })
-    return count;
-  }
+   getAlbumByTitle(title) {
+     return new Promise(function(resolve, reject) {
+       if (!title) {
+         reject(formatErrors.toJson("Please supply a name"));
+       }
+       pool.connect().then(client => {
+         client.query("SELECT * FROM albums WHERE LOWER(title) LIKE LOWER($1::text)", ['%'+title+'%']).then(res => {
+           resolve(res.rows[0]);
+           client.release();
+         })
+         .catch(e => {
+           reject(formatErrors.toJson("Cannot find album by name " + name));
+           client.release();
+         })
+       });
+     })
+   }
+  // getAlbumCount(artistId)
+  // {
+  //   var count = 0;
+  //   this.constructor.albums.map(function(album) {
+  //     if (album.artist_id == artistId)
+  //     {
+  //       count++;
+  //     }
+  //   })
+  //   return count;
+  // }
 
-  saveAlbums(albums) {
-    try {
-      this.constructor.albums = JSON.parse(albums);
-    } catch (e) {
-      this.constructor.albums = [];
-    }
-    this.constructor.loaded = true;
-  }
-
-  loadAll(callback) {
-    var _this = this;
-    fs.readFile('db/albums.json', 'utf8', function (err, albums){
-      if (err) {
-        return console.log(err);
-      }
-      _this.saveAlbums(albums);
-    })
-  };
 }
 
 module.exports = Album;
