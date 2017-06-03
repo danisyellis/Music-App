@@ -23,7 +23,6 @@ if (process.env.DATABASE_URL)
   };
 } else {
   config = {
-    user: 'foo', //env var: PGUSER
     database: 'music_api', //env var: PGDATABASE
     password: '', //env var: PGPASSWORD
     host: 'localhost', // Server hosting the postgres database
