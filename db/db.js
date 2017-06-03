@@ -6,12 +6,14 @@ const pg = require('pg');
 // note: all config is optional and the environment variables
 // will be read if the config is not present
 
+var config;
+
 if (process.env.DATABASE_URL)
 {
   const params = url.parse(process.env.DATABASE_URL);
   const auth = params.auth.split(':');
 
-  const config = {
+  config = {
     user: auth[0],
     password: auth[1],
     host: params.hostname,
@@ -20,7 +22,7 @@ if (process.env.DATABASE_URL)
     ssl: true
   };
 } else {
-  const config = {
+  config = {
     user: 'foo', //env var: PGUSER
     database: 'music_api', //env var: PGDATABASE
     password: '', //env var: PGPASSWORD
@@ -31,7 +33,7 @@ if (process.env.DATABASE_URL)
   };
 }
 
-
+console.log("Config is ", config)
 
 const pool = new pg.Pool(config);
 
