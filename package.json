@@ -21,7 +21,7 @@
   "scripts": {
     "postinstall": "",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "db:create": "createdb music_api",
     "db:drop": "dropdb music_api",
     "db:setup": "psql music_api < ./db/schema.sql",
